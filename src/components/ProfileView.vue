@@ -156,14 +156,9 @@ const nextLevel = computed(() => {
   return currentLevel.value + 1;
 });
 
-const pointsMod100 = profile.points % 100; // Остаток от 100
+const pointsMod100 = profile.value.points % 100; // Остаток от 100
 const pointsLeftTo100 = pointsMod100; // Сколько накоплено в текущей сотне
 const pointsNeededTo100 = 100 - pointsMod100; // Сколько нужно до 100
-const doubleInversePoints = computed(() => pointsToNextLevel.value);
-
-const progressPercentage = computed(() => {
-  return profile.value.points % 100;
-});
 
 // Загрузка данных из localStorage при монтировании, если inject не предоставил данные
 onMounted(() => {
