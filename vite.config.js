@@ -14,15 +14,5 @@ export default defineConfig({
             import.meta.url))
     },
 },
-server: {
-    host: '0.0.0.0', // Привязка ко всем интерфейсам
-    port: 8080, // Порт (можно изменить)
-    allowedHosts: [
-        '0.0.0.0',
-        'home.thefoxxstuff.net', // Разрешаем твой домен
-        'localhost', // Для локального доступа
-        '192.168.x.x' // Твой локальный IP (замени на актуальный)
-    ]
-},
   })
 
