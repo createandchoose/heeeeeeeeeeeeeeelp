@@ -1,90 +1,16 @@
-<!-- <template>
+<template>
   <div id="app">
     <div v-if="!isAuthenticated">
       <h2>Авторизация через Telegram</h2>
       <p>Загрузка...</p>
     </div>
-    <div v-else>
-      <h2>Профиль пользователя</h2>
-      <img :src="profile.photo_url" alt="Avatar" class="avatar" />
-      <p><strong>Имя:</strong> {{ profile.first_name }}</p>
-      <p><strong>Фамилия:</strong> {{ profile.last_name }}</p>
-      <p><strong>Username:</strong> {{ profile.username }}</p>
-    </div>
+    <RouterView v-else />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-
-export default {
-  name: 'App',
-  data() {
-    return {
-      isAuthenticated: false,
-      profile: {
-        first_name: '',
-        last_name: '',
-        username: '',
-        photo_url: ''
-      }
-    };
-  },
-  mounted() {
-    this.initTelegram();
-  },
-  methods: {
-    async initTelegram() {
-      const Telegram = window.Telegram.WebApp;
-      Telegram.ready();
-
-      const initData = Telegram.initData;
-
-      if (initData) {
-        try {
-          const response = await axios.post('https://b8stify.ru/auth/telegram', {
-            initData: initData
-          });
-          
-          this.profile = response.data.profile;
-          this.isAuthenticated = true;
-          Telegram.expand(); // Разворачиваем приложение
-        } catch (error) {
-          console.error('Ошибка авторизации:', error);
-          alert('Не удалось авторизоваться');
-        }
-      } else {
-        alert('Запустите приложение через Telegram');
-      }
-    }
-  }
-};
-</script>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-.avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin-bottom: 20px;
-}
-</style> -->
-
-<template>
-  <RouterView />
-</template>
-
-<script>
-import axios from 'axios';
 import { RouterView } from 'vue-router';
-
 
 export default {
   name: 'App',
@@ -106,7 +32,30 @@ export default {
     this.initTelegram();
   },
   methods: {
+    // Загрузка профиля из localStorage
+    loadProfileFromStorage() {
+      const savedProfile = localStorage.getItem('telegramProfile');
+      if (savedProfile) {
+        this.profile = JSON.parse(savedProfile);
+        this.isAuthenticated = true;
+        console.log('Загружен профиль из localStorage:', this.profile);
+        return true;
+      }
+      return false;
+    },
+
+    // Сохранение профиля в localStorage
+    saveProfileToStorage() {
+      localStorage.setItem('telegramProfile', JSON.stringify(this.profile));
+      console.log('Профиль сохранен в localStorage:', this.profile);
+    },
+
     async initTelegram() {
+      // Проверяем, есть ли сохраненные данные
+      if (this.loadProfileFromStorage()) {
+        return; // Если данные есть, авторизация не нужна
+      }
+
       // Проверяем наличие объекта Telegram
       console.log('Проверка Telegram.WebApp:', window.Telegram);
       if (!window.Telegram || !window.Telegram.WebApp) {
@@ -118,7 +67,6 @@ export default {
       const Telegram = window.Telegram.WebApp;
       console.log('Telegram WebApp объект:', Telegram);
 
-      // Инициализация Telegram
       Telegram.ready();
       const initData = Telegram.initData;
       console.log('Получено initData:', initData);
@@ -145,6 +93,7 @@ export default {
           throw new Error('Сервер не вернул профиль пользователя');
         }
 
+        // Заполняем профиль данными от сервера
         this.profile = {
           first_name: response.data.profile.first_name || '',
           last_name: response.data.profile.last_name || '',
@@ -154,6 +103,10 @@ export default {
           coins: response.data.profile.coins || 0,
           role: response.data.profile.role || ''
         };
+
+        // Сохраняем профиль в localStorage
+        this.saveProfileToStorage();
+
         this.isAuthenticated = true;
         Telegram.expand();
       } catch (error) {
@@ -164,24 +117,3 @@ export default {
   }
 };
 </script>
-
-<script setup>
-
-</script>
-
-<!-- <div id="app">
-  <div v-if="!isAuthenticated">
-    <h2>Авторизация через Telegram</h2>
-    <p>Загрузка...</p>
-  </div>
-  <div v-else>
-    <h2>Профиль пользователя</h2>
-    <img :src="profile.photo_url" alt="Avatar" class="avatar" />
-    <p><strong>Имя:</strong> {{ profile.first_name }}</p>
-    <p><strong>Фамилия:</strong> {{ profile.last_name }}</p>
-    <p><strong>Username:</strong> {{ profile.username }}</p>
-    <p><strong>Очки:</strong> {{ profile.points }}</p>
-    <p><strong>Монеты:</strong> {{ profile.coins }}</p>
-    <p><strong>Роль:</strong> {{ profile.role }}</p>
-  </div>
-</div> -->
