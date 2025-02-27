@@ -42,25 +42,30 @@ export default {
   },
   methods: {
     async initTelegram() {
-      const Telegram = window.Telegram?.WebApp;
-      if (!Telegram) {
-        console.error('Telegram WebApp не найден. Запустите приложение через Telegram.');
-        alert('Запустите приложение через Telegram');
+      // Проверяем наличие объекта Telegram
+      console.log('Проверка Telegram.WebApp:', window.Telegram);
+      if (!window.Telegram || !window.Telegram.WebApp) {
+        console.error('Telegram.WebApp не найден');
+        alert('Telegram WebApp не инициализирован. Убедитесь, что вы запустили приложение через Telegram.');
         return;
       }
 
+      const Telegram = window.Telegram.WebApp;
+      console.log('Telegram WebApp объект:', Telegram);
+
+      // Инициализация Telegram
       Telegram.ready();
       const initData = Telegram.initData;
       console.log('Получено initData:', initData);
 
       if (!initData) {
-        console.error('initData отсутствует');
-        alert('Запустите приложение через Telegram');
+        console.error('initData пустое');
+        alert('initData отсутствует. Проверьте, запущено ли приложение через Telegram WebApp.');
         return;
       }
 
       try {
-        console.log('Отправка POST запроса на сервер...');
+        console.log('Отправка POST запроса с initData:', initData);
         const response = await axios.post('https://b8stify.ru/auth/telegram', {
           initData: initData
         }, {
@@ -71,9 +76,8 @@ export default {
 
         console.log('Ответ от сервера:', response.data);
 
-        // Проверяем, что сервер вернул ожидаемые данные
-        if (!response.data.profile || !response.data.token) {
-          throw new Error('Неверный формат ответа сервера');
+        if (!response.data.profile) {
+          throw new Error('Сервер не вернул профиль пользователя');
         }
 
         this.profile = {
@@ -88,8 +92,8 @@ export default {
         this.isAuthenticated = true;
         Telegram.expand();
       } catch (error) {
-        console.error('Ошибка авторизации:', error.response ? error.response.data : error.message);
-        alert(`Не удалось авторизоваться: ${error.message}`);
+        console.error('Ошибка при запросе к серверу:', error.response ? error.response.data : error.message);
+        alert(`Ошибка авторизации: ${error.message}`);
       }
     }
   }
