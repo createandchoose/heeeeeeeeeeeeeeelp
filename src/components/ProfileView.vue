@@ -24,14 +24,14 @@
                 <div class="text-4">Рейтинг #8</div>
             </div>
         </div>
-        </span>
+
 
         <div class="bcoin">
             <div class="frame-2169">
                 <div class="frame-2170">
                     <div class="text-16">Текущий баланс</div>
                 </div>
-                <div class="frame-2171"><img src="" loading="lazy" width="24" height="24" alt="" class="frame-2172">
+                <div class="frame-2171"><img :src="profile.photo_url" loading="lazy" width="24" height="24" alt="" class="frame-2172">
                     <div class="text-17">{{ profile.coins }},00</div>
                 </div>
                 <a href="#" target="_blank" class="button-style fill">
@@ -128,6 +128,7 @@
                 </div>
             </div>
         </div>
+    </span>
     </div>
 
 
