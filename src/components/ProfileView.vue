@@ -1,18 +1,13 @@
 <template>
-
-
-
-
-
 <div class="continer">
         <div class="zag">Мой профиль</div>
-        <div class="frame-447">
+        <div v-if="!isAuthenticated" class="frame-447">
             <div class="frame-68">
                 <div class="imgprof"><img src="" loading="lazy" alt=""></div>
                 <div class="content-style">
                     <div class="component elements">
-                        <div class="text">Айтал Попов</div>
-                        <div class="text-2">Сотрудник</div>
+                        <div class="text">{{ profile.first_name }} {{ profile.last_name }}</div>
+                        <div class="text-2">Сотрудник{{ profile.role }}</div>
                     </div>
                 </div>
             </div>
@@ -30,7 +25,7 @@
                     <div class="text-16">Текущий баланс</div>
                 </div>
                 <div class="frame-2171"><img src="" loading="lazy" width="24" height="24" alt="" class="frame-2172">
-                    <div class="text-17">450,00</div>
+                    <div class="text-17">{{ profile.coins }},00</div>
                 </div>
                 <a href="#" target="_blank" class="button-style fill">
                     <div class="text-18">BOOST Коины</div>
