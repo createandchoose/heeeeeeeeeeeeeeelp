@@ -49,7 +49,7 @@
         <div class="frame-447-1">
             <div class="text">Баллы</div>
             <div class="ballbars">
-                <div class="znachns" :style="{ width: progressPercentage + '%' }"></div>
+                <div class="znachns" :style="{ width: pointsMod100 + '%' }"></div>
             </div>
             <div class="div-block">
                 <div class="texttt1">{{ pointsMod100 }} из 100</div>
