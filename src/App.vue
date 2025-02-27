@@ -29,16 +29,26 @@ export default {
     };
   },
   mounted() {
-    this.initTelegram();
-    this.startProfileUpdateCheck();
+    this.checkAuthentication();
   },
   methods: {
+    // Проверка текущей авторизации
+    async checkAuthentication() {
+      if (this.loadProfileFromStorage()) {
+        console.log('Авторизация подтверждена через localStorage.');
+        this.isAuthenticated = true;
+        this.startProfileUpdateCheck();
+      } else {
+        console.log('Авторизация отсутствует. Инициализируем Telegram...');
+        await this.initTelegram();
+      }
+    },
+
     // Загрузка профиля из localStorage
     loadProfileFromStorage() {
       const savedProfile = localStorage.getItem('telegramProfile');
       if (savedProfile) {
         this.profile = JSON.parse(savedProfile);
-        this.isAuthenticated = true;
         console.log('Загружен профиль из localStorage:', this.profile);
         return true;
       }
@@ -52,10 +62,6 @@ export default {
     },
 
     async initTelegram() {
-      if (this.loadProfileFromStorage()) {
-        return; // Если данные есть, авторизация не нужна
-      }
-
       console.log('Проверка Telegram.WebApp:', window.Telegram);
       if (!window.Telegram || !window.Telegram.WebApp) {
         console.error('Telegram.WebApp не найден');
@@ -91,6 +97,7 @@ export default {
         this.updateProfile(response.data.profile);
         this.isAuthenticated = true;
         Telegram.expand();
+        this.startProfileUpdateCheck();
       } catch (error) {
         console.error('Ошибка при запросе к серверу:', error.response ? error.response.data : error.message);
         alert(`Ошибка авторизации: ${error.message}`);
@@ -98,7 +105,10 @@ export default {
     },
 
     async checkProfileUpdates() {
-      if (!this.isAuthenticated) return;
+      if (!this.isAuthenticated) {
+        console.warn('Попытка обновления профиля без авторизации.');
+        return;
+      }
 
       try {
         const response = await axios.get('https://b8stify.ru/profile', {
