@@ -1,7 +1,13 @@
 <template>
 <div class="continer">
         <div class="zag">Мой профиль</div>
-        <div v-if="!isAuthenticated" class="frame-447">
+
+        <div v-if="!isAuthenticated">
+            <h2>Авторизация через Telegram</h2>
+            <p>Загрузка...</p>
+        </div>
+        <span v-else>
+        <div class="frame-447">
             <div class="frame-68">
                 <div class="imgprof"><img src="" loading="lazy" alt=""></div>
                 <div class="content-style">
@@ -18,6 +24,7 @@
                 <div class="text-4">Рейтинг #8</div>
             </div>
         </div>
+        </span>
 
         <div class="bcoin">
             <div class="frame-2169">
@@ -127,4 +134,29 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+
+const isAuthenticated = ref(false);
+const profile = ref({});
+
+// Функция для инициализации Telegram Web App
+const initTelegram = () => {
+  if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+
+    // Получаем данные профиля
+    profile.value = tg.initDataUnsafe.user;
+    isAuthenticated.value = true;
+
+    // Выводим информацию о пользователе в консоль
+    console.log('Профиль пользователя:', profile.value);
+  } else {
+    console.error('Telegram.WebApp не найден');
+  }
+};
+
+// Инициализация при монтировании компонента
+onMounted(() => {
+  initTelegram();
+});
 </script>

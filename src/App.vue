@@ -78,7 +78,6 @@ export default {
 </style> -->
 
 <template>
-
   <RouterView />
 </template>
 
@@ -169,15 +168,6 @@ export default {
 <script setup>
 
 </script>
-
-<style scoped>
-.avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-}
-</style> 
-
 
 <!-- <div id="app">
   <div v-if="!isAuthenticated">
