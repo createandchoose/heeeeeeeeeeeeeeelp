@@ -20,6 +20,8 @@
 
 <script>
 import axios from 'axios';
+import { RouterView } from 'vue-router';
+
 
 export default {
   name: 'App',
@@ -101,7 +103,7 @@ export default {
 </script>
 
 <script setup>
-import { RouterView } from 'vue-router';
+
 </script>
 
 <style scoped>
