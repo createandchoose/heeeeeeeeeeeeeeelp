@@ -19,20 +19,18 @@
             </div>
             <div class="component-2 elements">
                 <div class="frame-1114">
-                    <div class="text-3">Ур. 20</div>
+                    <div class="text-3">Ур. {{ currentLevel }}</div>
                 </div>
-                <div class="text-4">Рейтинг #8</div>
+                <div class="text-4">Рейтинг #1</div>
             </div>
         </div>
 
-
-
-        <p><strong>Очки:</strong> {{ profile.points }}</p>
+        <!-- <p><strong>Очки:</strong> {{ profile.points }}</p>
       <p><strong>Уровень:</strong> {{ currentLevel }}</p>
       <p><strong>Следующий уровень:</strong> {{ nextLevel }}</p>
       <p><strong>Осталось до следующего уровня:</strong> {{ pointsToNextLevel }} очков</p>
       <div class="progress-bar">
-        <div class="progress" :style="{ width: progressPercentage + '%' }"></div></div>
+        <div class="progress" :style="{ width: progressPercentage + '%' }"></div></div> -->
 
 
         <div class="bcoin">
@@ -51,14 +49,14 @@
         <div class="frame-447-1">
             <div class="text">Баллы</div>
             <div class="ballbars">
-                <div class="znachns"></div>
+                <div class="znachns" :style="{ width: progressPercentage + '%' }"></div>
             </div>
             <div class="div-block">
-                <div class="texttt1">65 из 100</div>
+                <div class="texttt1">{{ pointsToNextLevel }} из 100</div>
                 <div class="div-block-2">
-                    <div class="texttt1">Еще 45 до</div>
+                    <div class="texttt1">Еще {{ remaining }} до</div>
                     <div class="frame-1114">
-                        <div class="text-3">Ур. 21</div>
+                        <div class="text-3">Ур. {{ nextLevel }}</div>
                     </div>
                 </div>
             </div>
@@ -157,6 +155,8 @@ const currentLevel = computed(() => {
 const nextLevel = computed(() => {
   return currentLevel.value + 1;
 });
+
+const remaining = computed(() => { return 100 - nextLevel.value; });
 
 const pointsToNextLevel = computed(() => {
   return 100 - (profile.value.points % 100);
