@@ -52,9 +52,9 @@
                 <div class="znachns" :style="{ width: progressPercentage + '%' }"></div>
             </div>
             <div class="div-block">
-                <div class="texttt1">{{ pointsToNextLevel }} из 100</div>
+                <div class="texttt1">{{ doubleInversePoints }} из 100</div>
                 <div class="div-block-2">
-                    <div class="texttt1">Еще {{ remaining }} до</div>
+                    <div class="texttt1">Еще {{ pointsToNextLevel }} до</div>
                     <div class="frame-1114">
                         <div class="text-3">Ур. {{ nextLevel }}</div>
                     </div>
@@ -156,11 +156,15 @@ const nextLevel = computed(() => {
   return currentLevel.value + 1;
 });
 
-const remaining = computed(() => { return 100 - nextLevel.value; });
-
 const pointsToNextLevel = computed(() => {
   return 100 - (profile.value.points % 100);
 });
+
+const inversePoints = computed(() => { 
+  return 100 - pointsToNextLevel.value; 
+});
+
+const doubleInversePoints = computed(() => pointsToNextLevel.value);
 
 const progressPercentage = computed(() => {
   return profile.value.points % 100;
