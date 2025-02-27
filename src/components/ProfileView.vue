@@ -142,19 +142,36 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue';
+import { ref, computed, inject, onMounted } from 'vue';
 
 // Получаем данные из App.vue через inject
 const { profile, isAuthenticated } = inject('authData', { profile: ref({ points: 0 }), isAuthenticated: ref(false) });
 
 // Computed свойства для уровней и прогресса
-const currentLevel = computed(() => 1 + Math.floor(profile.value.points / 100));
-const nextLevel = computed(() => currentLevel.value + 1);
+const currentLevel = computed(() => {
+  return 1 + Math.floor(profile.value.points / 100);
+});
+
+const nextLevel = computed(() => {
+  return currentLevel.value + 1;
+});
+
 const pointsMod100 = computed(() => profile.value.points % 100); // Остаток от 100
 const pointsLeftTo100 = computed(() => pointsMod100.value); // Сколько накоплено в текущей сотне
 const pointsNeededTo100 = computed(() => 100 - pointsMod100.value); // Сколько нужно до 100
-</script>
 
+// Загрузка данных из localStorage при монтировании, если inject не предоставил данные
+onMounted(() => {
+  if (!isAuthenticated.value) {
+    const savedProfile = localStorage.getItem('telegramProfile');
+    if (savedProfile) {
+      profile.value = JSON.parse(savedProfile);
+      isAuthenticated.value = true;
+      console.log('Загружен профиль из localStorage в ProfileView:', profile.value);
+    }
+  }
+});
+</script>
 
 <!-- <script setup>
 import { ref, onMounted } from 'vue';
